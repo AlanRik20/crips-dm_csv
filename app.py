@@ -7,18 +7,20 @@ import joblib
 import numpy as np
 
 # 1. Configuración inicial de la página
-st.set_page_config(page_title="Dashboard Delitos CABA 2023", layout="wide", page_icon="🚓")
+st.set_page_config(page_title="Dashboard Delitos CABA 2023", layout="wide")
 
 st.title("Análisis de Seguridad Urbana: CABA 2023")
 st.markdown("""
-Esta aplicación permite explorar interactivamente los incidentes delictivos registrados en la Ciudad Autónoma de Buenos Aires durante 2023. 
-Utiliza un modelo de **Machine Learning (K-Means)** para identificar automáticamente las *Zonas Críticas* o Hotspots de inseguridad.
+Aplicación desarrollada para el Trabajo Práctico de la materia Ingeniería de Software. La finalidad de esta es la de poder explorar interactivamente
+los incidentes delictivos en CABA durante el 2023. Se utilizó el algoritmo K-means de aprendizaje no supervisado para entrenar el modelo
+utilizado, el cual identifica automáticamente las zonas críticas o hotspots de inseguridad
 """)
 
 # 2. Carga y limpieza de datos (con caché para optimizar rendimiento)
 @st.cache_data
 def load_data():
-    df = pd.read_csv("delitos_2023.csv")
+    url_delitos = "https://raw.githubusercontent.com/Ticii18/csv-crisp-dm/refs/heads/main/data/delitos_2023.csv"
+    df = pd.read_csv(url_delitos)
     
     # Limpieza idéntica a la Fase 3 de la notebook
     df['fecha'] = pd.to_datetime(df['fecha'], errors='coerce')
@@ -42,7 +44,7 @@ try:
     kmeans = load_model()
     modelo_cargado = True
 except FileNotFoundError:
-    st.warning("⚠️ No se encontró el archivo 'modelo_kmeans.pkl'. Ejecutando sin predicción de zonas críticas.")
+    st.warning("No se encontró el archivo 'modelo_kmeans.pkl'. Ejecutando sin predicción de zonas críticas.")
     modelo_cargado = False
 
 # 4. Barra Lateral - Filtros Interactivos
